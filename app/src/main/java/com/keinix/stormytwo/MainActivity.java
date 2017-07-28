@@ -25,8 +25,11 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.keinix.stormytwo.weather.Current;
+import com.keinix.stormytwo.weather.Day;
 import com.keinix.stormytwo.weather.Forecast;
+import com.keinix.stormytwo.weather.Hour;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -89,8 +92,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void getForcast() {
-
-
         if (networkIsConnected()) {
 
             toggleRefresh();
@@ -192,27 +193,16 @@ public class MainActivity extends AppCompatActivity {
                                            String permissions[], int[] grantResults) {
         switch (requestCode) {
             case 123: {
-                // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
                     mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
                     getForcast();
-
-                    // permission was granted, yay! Do the
-                    // contacts-related task you need to do.
-
                 } else {
                     Toast.makeText(this, "Please enable location access to use this app",
                             Toast.LENGTH_LONG).show();
-
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
                 }
             }
-
-            // other 'case' lines to check for other
-            // permissions this app might request
         }
     }
 
@@ -230,7 +220,37 @@ public class MainActivity extends AppCompatActivity {
     private Forecast parseForecastDetails(String jsonData) throws JSONException{
         Forecast forecast = new Forecast();
         forecast.setCurrent(getCurrentDetails(jsonData));
+        forecast.setHourlyForecast(getHourlyForecast(jsonData));
+        forecast.setDailyForecast(getDailyForecast(jsonData));
         return forecast;
+    }
+
+    private Hour[] getHourlyForecast(String jsonData) throws JSONException{
+        JSONObject forecast = new JSONObject(jsonData);
+        String timezone = forecast.getString("timezone");
+        JSONObject hourly = forecast.getJSONObject("hourly");
+        JSONArray data = hourly.getJSONArray("data");
+
+        Hour[] hourlyForecast = new Hour[data.length()];
+
+        for (int i = 0; i < data.length(); i++) {
+            JSONObject jsonHour = data.getJSONObject(i);
+            Hour hour = new Hour();
+
+            hour.setSummary(jsonHour.getString("summary"));
+            hour.setTemperature(jsonHour.getDouble("temperature"));
+            hour.setIcon(jsonHour.getString("icon"));
+            hour.setTime(jsonHour.getLong("time"));
+            hour.setTimeZone(timezone);
+
+            hourlyForecast[i] = hour;
+
+        }
+        return hourlyForecast;
+    }
+
+    private Day[] getDailyForecast(String jsonData) throws JSONException{
+        return new Day[0];
     }
 
     private Current getCurrentDetails(String jsonData) throws JSONException {
