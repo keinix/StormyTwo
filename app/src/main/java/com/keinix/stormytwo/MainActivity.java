@@ -24,6 +24,8 @@ import android.widget.Toast;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.keinix.stormytwo.weather.Current;
+import com.keinix.stormytwo.weather.Forecast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -43,7 +45,7 @@ import okhttp3.Response;
 public class MainActivity extends AppCompatActivity {
 
     public final String TAG = MainActivity.class.getSimpleName();
-    private CurrentWeather mCurrentWeather;
+    private Forecast mForecast;
     private FusedLocationProviderClient mFusedLocationClient;
     private double mUserLatitude;
     private double mUserLongitude;
@@ -158,7 +160,7 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     String jsonData = response.body().string();
                     if (response.isSuccessful()) {
-                        mCurrentWeather = getCurrentDetails(jsonData);
+                        mForecast = parseForecastDetails(jsonData);
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -207,7 +209,6 @@ public class MainActivity extends AppCompatActivity {
                     // permission denied, boo! Disable the
                     // functionality that depends on this permission.
                 }
-                return;
             }
 
             // other 'case' lines to check for other
@@ -226,34 +227,41 @@ public class MainActivity extends AppCompatActivity {
         return isConneted;
     }
 
-    private CurrentWeather getCurrentDetails(String jsonData) throws JSONException {
+    private Forecast parseForecastDetails(String jsonData) throws JSONException{
+        Forecast forecast = new Forecast();
+        forecast.setCurrent(getCurrentDetails(jsonData));
+        return forecast;
+    }
+
+    private Current getCurrentDetails(String jsonData) throws JSONException {
         JSONObject forecast = new JSONObject(jsonData);
         JSONObject currently = forecast.getJSONObject("currently");
 
-        CurrentWeather currentWeather = new CurrentWeather();
-        currentWeather.setmTimeZone(forecast.getString("timezone"));
-        currentWeather.setmHumidity(currently.getDouble("humidity"));
-        currentWeather.setmIcon(currently.getString("icon"));
-        currentWeather.setmPercipChance(currently.getDouble("precipProbability"));
-        currentWeather.setmSummary(currently.getString("summary"));
-        currentWeather.setmTemperature(currently.getDouble("temperature"));
-        currentWeather.setmTime(currently.getLong("time"));
+        Current current = new Current();
+        current.setmTimeZone(forecast.getString("timezone"));
+        current.setmHumidity(currently.getDouble("humidity"));
+        current.setmIcon(currently.getString("icon"));
+        current.setmPercipChance(currently.getDouble("precipProbability"));
+        current.setmSummary(currently.getString("summary"));
+        current.setmTemperature(currently.getDouble("temperature"));
+        current.setmTime(currently.getLong("time"));
 
-        Log.d(TAG, currentWeather.getFormattedTime());
+        Log.d(TAG, current.getFormattedTime());
 
-        return currentWeather;
+        return current;
     }
 
     private void updateDisplay() {
-        mTemperatureLabel.setText(mCurrentWeather.getmTemperature() + "");
-        mTimeLabel.setText("At " + mCurrentWeather.getFormattedTime() + " it will be");
-        mHumidityValue.setText(mCurrentWeather.getmHumidity() + "");
-        mPrecipValue.setText(mCurrentWeather.getmPercipChance() + "%");
-        mSummaryLabel.setText(mCurrentWeather.getmSummary());
+        Current current = mForecast.getCurrent();
+        mTemperatureLabel.setText(current.getmTemperature() + "");
+        mTimeLabel.setText("At " + current.getFormattedTime() + " it will be");
+        mHumidityValue.setText(current.getmHumidity() + "");
+        mPrecipValue.setText(current.getmPercipChance() + "%");
+        mSummaryLabel.setText(current.getmSummary());
         mLocationLabel.setText(mLocationName);
 
 
-        Drawable drawable = ContextCompat.getDrawable(this, mCurrentWeather.getIconId());
+        Drawable drawable = ContextCompat.getDrawable(this, current.getIconId());
         mIconImageView.setImageDrawable(drawable);
     }
 

@@ -1,12 +1,14 @@
-package com.keinix.stormytwo;
+package com.keinix.stormytwo.weather;
 
+
+import com.keinix.stormytwo.R;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
-public class CurrentWeather {
+public class Current {
     private String mIcon;
     private long mTime;
     private double mTemperature;
