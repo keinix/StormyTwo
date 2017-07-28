@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">StormyTwo</string>
+    <string name="error_title">Oops! Sorry!</string>
+    <string name="error_messege">There was a network error. Please try again.</string>
+    <string name="error_ok_button_text">OK</string>
+    <string name="no_network_toast">Network connection is not available</string>
+    <string name="location_warning">You have not given permission for Location use</string>
+</resources>
