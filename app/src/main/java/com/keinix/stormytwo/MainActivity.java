@@ -180,7 +180,8 @@ public class MainActivity extends AppCompatActivity {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
 
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 123);
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 123);
 
         } else {
             mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
@@ -250,7 +251,27 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private Day[] getDailyForecast(String jsonData) throws JSONException{
-        return new Day[0];
+        // code without vid stats here
+        JSONObject forecast = new JSONObject(jsonData);
+        JSONObject daily = forecast.getJSONObject("daily");
+        String timezone = forecast.getString("timezone");
+
+        JSONArray data = daily.getJSONArray("data");
+
+        Day[] dailyForecast = new Day[data.length()];
+
+        for (int i = 0; i <data.length(); i++) {
+            JSONObject jsonDay = data.getJSONObject(i);
+            Day day = new Day();
+
+            day.setIcon(jsonDay.getString("icon"));
+            day.setSummary(jsonDay.getString("summary"));
+            day.setTimeZone(timezone);
+            day.setTemperatureMax(jsonDay.getDouble("temperatureMax"));
+            dailyForecast[i] = day;
+
+        }
+        return dailyForecast;
     }
 
     private Current getCurrentDetails(String jsonData) throws JSONException {
