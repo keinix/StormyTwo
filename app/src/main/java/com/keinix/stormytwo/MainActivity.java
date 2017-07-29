@@ -98,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
             getUserLocation();
 
         } else {
-            GenericAlertDialog.newInstance("Oops!", "GET ON THE INTERNET NIGGA")
+            GenericAlertDialog.newInstance("Oops!", "Make sure you're on the internet")
                     .show(getFragmentManager(), "NotConnected");
         }
     }
@@ -116,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
         } catch (SecurityException e) {
-            Log.e(TAG, "No permission for getwork location");
+            Log.e(TAG, "No permission for network location");
             Toast.makeText(this, R.string.location_warning, Toast.LENGTH_LONG).show();
         }
     }
@@ -146,7 +146,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call call, IOException e) {
                 toggleRefresh();
-                GenericAlertDialog.newInstance("Oops!", "Could not get eather data")
+                GenericAlertDialog.newInstance("Oops!", "Could not get network data")
                         .show(getFragmentManager(), "NO_WEATHER_DATA");
             }
 
