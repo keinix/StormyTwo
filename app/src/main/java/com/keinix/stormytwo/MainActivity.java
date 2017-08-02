@@ -116,7 +116,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 .setFastestInterval(1000)
                 .setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
 
-        mGoogleApiClient.connect();
     }
 
 
@@ -128,15 +127,22 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             }
         });
 
+        if (mGoogleApiClient == null) {
+            setLocationResources();
+            mGoogleApiClient.connect();
+        }
+
         try {
             Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
 
             if (location != null) {
                 parseLocation(location);
                 getNewForecast();
+                Log.d("FINDME", "REFRESH BUTTON: getLastLocation was NOT null");
             } else {
                 // location handled + weather updated in onLocationChanged()
                 LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+                Log.d("FINDME", "REFRESH BUTTON: getLastLocation WAS null");
             }
 
         } catch (SecurityException e) {
@@ -147,7 +153,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     private void getNewForecast() {
         // makes a weather API call -> assigns data to model -> updates display
-        // make sure to toggelRefresh() before calling this method
+        // make sure to toggleRefresh() before calling this method
         String apiKey ="4ada4e54ba9b437077c6695a8cdb202a";
         String forecastUrl = "https://api.darksky.net/forecast/" +
                 apiKey + "/" + mUserLatitude + "," + mUserLongitude;
@@ -252,6 +258,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     @Override
     protected void onResume() {
         super.onResume();
+        // connecting will start a chain reaction in OnConnected()
+        // user's new location will used to show new weather data
         mGoogleApiClient.connect();
         Log.d("FINDME", "onResume connect activated");
     }
@@ -279,10 +287,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
 
             if (location != null) {
-                Log.d("FINDME", "getLastLocation was null");
+                Log.d("FINDME", "getLastLocation was NOT null");
                 parseLocation(location);
                 getNewForecast();
             } else {
+                Log.d("FINDME", "getLastLocation WAS null");
                 LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
                 Log.d("FINDME", "Location updates requested");
             }
@@ -292,21 +301,18 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     @Override
     public void onConnectionSuspended(int i) {
         Log.i(TAG, "Location services suspended.");
-
     }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         Log.d("FINDM", "onConnectionFailed method activated");
-
     }
 
     @Override
     public void onLocationChanged(Location location) {
-        Log.d("FINDME", "onLocationChanged activated");
+        Log.d("FINDME", "onLocationChanged dactivated");
         LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
         parseLocation(location);
         getNewForecast();
-
     }
 }
