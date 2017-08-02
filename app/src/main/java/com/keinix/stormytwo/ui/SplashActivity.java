@@ -1,4 +1,4 @@
-package com.keinix.stormytwo;
+package com.keinix.stormytwo.ui;
 
 import android.Manifest;
 import android.content.Intent;
@@ -10,6 +10,8 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
+
+import com.keinix.stormytwo.R;
 
 public class SplashActivity extends AppCompatActivity {
     private Intent intent;

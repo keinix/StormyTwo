@@ -1,4 +1,4 @@
-package com.keinix.stormytwo;
+package com.keinix.stormytwo.ui;
 
 import android.app.AlertDialog;
 import android.app.Dialog;

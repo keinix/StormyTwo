@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/cast_intro_overlay_button_background_color"
-    tools:context="com.keinix.stormytwo.MainActivity"
+    tools:context="com.keinix.stormytwo.ui.MainActivity"
     tools:layout_editor_absoluteX="0dp"
     tools:layout_editor_absoluteY="25dp">
 
