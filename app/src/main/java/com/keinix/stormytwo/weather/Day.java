@@ -1,8 +1,5 @@
 package com.keinix.stormytwo.weather;
 
-/**
- * Created by Keinix on 8/2/17.
- */
 
 public class Day {
     private long mTime;

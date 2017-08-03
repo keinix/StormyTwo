@@ -1,6 +1,7 @@
 package com.keinix.stormytwo.ui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
@@ -14,6 +15,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -40,6 +42,7 @@ import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
@@ -67,6 +70,17 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     @BindView(R.id.refreshImageView) ImageView mRefreshImageView;
     @BindView(R.id.progressBar) ProgressBar mProgressBar;
     @BindView(R.id.locationLabel) TextView mLocationLabel;
+    @BindView(R.id.hourly) Button mHourlyButton;
+    @BindView(R.id.daily) Button mDailyButton;
+
+    @OnClick(R.id.daily) void dailyListView() {
+        Intent intent = new Intent(this, DailyForecastActivity.class);
+        startActivity(intent);
+    }
+
+    @OnClick(R.id.refreshImageView) void refresh() {
+        refreshWeather();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,14 +96,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         } else {
             Toast.makeText(this, "Connect to the internet please", Toast.LENGTH_LONG).show();
         }
-
-        mRefreshImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                refreshWeather();
-            }
-        });
-
     }
 
     private boolean networkIsConnected() {

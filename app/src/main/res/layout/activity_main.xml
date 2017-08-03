@@ -223,7 +223,8 @@
             android:layout_weight="1"
             android:background="#40ffffff"
             android:textColor="#ffffffff"
-            android:text="7 day" />
+            android:text="7 day"
+            android:layout_marginLeft="2dp"/>
     </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

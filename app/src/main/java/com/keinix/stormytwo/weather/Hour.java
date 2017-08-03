@@ -1,7 +1,5 @@
 package com.keinix.stormytwo.weather;
 
-
-
 public class Hour {
     private long mTime;
     private String mSummary;
