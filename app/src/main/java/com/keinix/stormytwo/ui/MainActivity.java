@@ -96,11 +96,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         ConnectivityManager manager = (ConnectivityManager)
                 getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo= manager.getActiveNetworkInfo();
-        boolean isConneted = false;
+        boolean isConnected = false;
         if (networkInfo != null && networkInfo.isConnected()) {
-            isConneted = true;
+            isConnected = true;
         }
-        return isConneted;
+        return isConnected;
     }
 
 
@@ -118,7 +118,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 .setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
 
     }
-
 
     private void refreshWeather() {
         runOnUiThread(new Runnable() {
@@ -241,6 +240,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         for (int i = 0; i < data.length(); i++) {
             Hour hour = new Hour();
             JSONObject jsonHour = data.getJSONObject(i);
+
             hour.setTimeZone(timeZone);
             hour.setIcon(jsonHour.getString("icon"));
             hour.setSummary(jsonHour.getString("summary"));
@@ -253,7 +253,23 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     private Day[] getDailyForecast(String jsonData) throws JSONException {
         JSONObject forecast = new JSONObject(jsonData);
-        JSONObject currently = forecast.getJSONObject("currently");
+        String timeZone = forecast.getString("timezone");
+        JSONObject daily = forecast.getJSONObject("daily");
+        JSONArray data = daily.getJSONArray("data");
+        Day[] dailyForecast = new Day[data.length()];
+
+        for (int i = 0; i < data.length(); i++) {
+            Day day = new Day();
+            JSONObject jsonDay = data.getJSONObject(i);
+
+            day.setTimeZone(timeZone);
+            day.setIcon(jsonDay.getString("icon"));
+            day.setTime(jsonDay.getLong("time"));
+            day.setSummary(jsonDay.getString("summary"));
+            day.setTemperatureMax(jsonDay.getDouble("temperatureMax"));
+            dailyForecast[i] = day;
+        }
+        return dailyForecast;
     }
 
     private void updateDisplay() {
