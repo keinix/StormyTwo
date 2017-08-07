@@ -5,4 +5,5 @@
     <string name="error_ok_button_text">OK</string>
     <string name="no_network_toast">Network connection is not available</string>
     <string name="location_warning">You have not given permission for Location use</string>
+    <string name="no_forecast_data">There is no data to display</string>
 </resources>
