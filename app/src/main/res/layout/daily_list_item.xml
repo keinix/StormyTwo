@@ -21,7 +21,7 @@
         android:layout_alignParentStart="true" />
 
     <ImageView
-        android:id="@+id/IconImageView"
+        android:id="@+id/iconImageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
@@ -39,8 +39,8 @@
         android:layout_centerVertical="true"
         android:layout_marginLeft="29dp"
         android:layout_marginStart="29dp"
-        android:layout_toEndOf="@+id/IconImageView"
-        android:layout_toRightOf="@+id/IconImageView"
+        android:layout_toEndOf="@+id/iconImageView"
+        android:layout_toRightOf="@+id/iconImageView"
         android:textColor="#ffffffff"
         android:textSize="20sp"
         tools:text="Wednesday"
