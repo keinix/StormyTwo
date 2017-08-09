@@ -42,6 +42,7 @@ public class DayAdapters extends BaseAdapter {
 
         if (view == null) {
             // this means it's a brand new view
+            // the null if for view group root
             view = LayoutInflater.from(mContext).inflate(R.layout.daily_list_item, null);
             holder = new ViewHolder();
 
@@ -59,8 +60,13 @@ public class DayAdapters extends BaseAdapter {
 
         holder.iconImageView.setImageResource(day.getIconID());
         holder.temperatureLabel.setText(Integer.toString(day.getTemperatureMax()));
-        holder.dayLabel.setText(day.getDayOfTheWeek());
         holder.circleImageView.setImageResource(R.drawable.bg_temperature);
+
+        if (i == 0) {
+            holder.dayLabel.setText("Today");
+        } else {
+            holder.dayLabel.setText(day.getDayOfTheWeek());
+        }
 
         return view;
     }
