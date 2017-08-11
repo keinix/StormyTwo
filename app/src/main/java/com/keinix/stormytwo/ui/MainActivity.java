@@ -74,6 +74,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     @BindView(R.id.locationLabel) TextView mLocationLabel;
     @BindView(R.id.hourly) Button mHourlyButton;
     @BindView(R.id.daily) Button mDailyButton;
+    private int mBackCount;
 
     @OnClick(R.id.daily) void dailyListView() {
         Intent intent = new Intent(this, DailyForecastActivity.class);
@@ -325,11 +326,25 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     }
 
     @Override
+    public void onBackPressed() {
+        if (mBackCount >= 1) {
+            Intent intent = new Intent(Intent.ACTION_MAIN);
+            intent.addCategory(Intent.CATEGORY_HOME);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        } else {
+            Toast.makeText(this, "Hit back again to exit", Toast.LENGTH_SHORT).show();
+            mBackCount++;
+        }
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
         // connecting will start a chain reaction in OnConnected()
         // user's new location will used to show new weather data
         mGoogleApiClient.connect();
+        mBackCount = 0;
         Log.d("FINDME", "onResume connect activated");
     }
 
