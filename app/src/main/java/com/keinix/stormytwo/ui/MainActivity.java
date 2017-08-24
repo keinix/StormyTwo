@@ -1,5 +1,8 @@
 package com.keinix.stormytwo.ui;
 
+import android.animation.Animator;
+import android.animation.AnimatorInflater;
+import android.animation.AnimatorSet;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -99,6 +102,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         mProgressBar.setVisibility(View.INVISIBLE);
+
+//        mHourlyButton.setScaleY(0);
+//        mHourlyButton.setScaleX(0);
+//        mDailyButton.setScaleY(0);
+//        mDailyButton.setScaleX(0);
 
         if (networkIsConnected()) {
             // this starts a chain reaction where the weather will be updated on screen
@@ -209,6 +217,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                             public void run() {
                                 updateDisplay();
                                 toggleRefresh();
+                                animateButtons();
                             }
                         });
                     }
@@ -325,6 +334,18 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     }
 
+    private void animateButtons() {
+        Animator hourlyButtonAnimation = AnimatorInflater.loadAnimator(this, R.animator.scale_buttons);
+        hourlyButtonAnimation.setTarget(mHourlyButton);
+
+        Animator dailyButtonAnimation = AnimatorInflater.loadAnimator(this, R.animator.scale_buttons);
+        dailyButtonAnimation.setTarget(mDailyButton);
+
+        AnimatorSet set = new AnimatorSet();
+        set.playTogether(hourlyButtonAnimation, dailyButtonAnimation);
+        set.start();
+    }
+
     @Override
     public void onBackPressed() {
         if (mBackCount >= 1) {
@@ -343,6 +364,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         super.onResume();
         // connecting will start a chain reaction in OnConnected()
         // user's new location will used to show new weather data
+        mHourlyButton.setScaleY(0);
+        mHourlyButton.setScaleX(0);
+        mDailyButton.setScaleY(0);
+        mDailyButton.setScaleX(0);
+
         mGoogleApiClient.connect();
         mBackCount = 0;
         Log.d("FINDME", "onResume connect activated");
